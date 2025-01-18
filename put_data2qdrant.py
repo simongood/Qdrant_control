@@ -95,12 +95,6 @@ def main():
             print(f'正在處理 : 第 {i//batch_size + 1} 批 ; 第 {len(points) +1} 筆')
             point = file_2_Qdrant_point(placeID, config, folder_path)   # 將文件轉成 point
             points.append(point)
-            # if not qdrant_obj.is_same_placeID(placeID):
-            #     point = file_2_Qdrant_point(placeID, config, folder_path)   # 將文件轉成 point
-            #     points.append(point)
-            # else :
-            #     print('重複資料, 不做成point匯入')
-
 
         # 上傳 Qdrant
         if len(points) > 0:
