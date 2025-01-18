@@ -1,6 +1,7 @@
 ## 本地作業 : 
 1. 向量化資料
 2. 上傳雲端
+> data 在 data_zip.zip 內
 
 * #### 單一文件流程 put_data2qdrant
 1. text = 將文件格式化 json -> txt 以空白分割結合
