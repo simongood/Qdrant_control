@@ -126,17 +126,20 @@ class qdrant_manager:
         print(f"內部前 {limit} 個點 : \n")
         # 滚动查询所有数据
         scroll = self.qdrant_client.scroll(collection_name=self.collection_name, with_payload=True, with_vectors=False, limit=limit)
-        # print(scroll)
+        placeIDs = []
         
         if payload_key == True:
             print('index', 'id', 'key 值')
             for index, point in enumerate(scroll[0]):
                 print(index+1, point.id, point.payload.keys())
+                placeIDs.append(point.payload['placeID'])
         else :
             print('index', 'id                              ','placeID')
             for index, point in enumerate(scroll[0]):
                 print(index+1, point.id ,point.payload['placeID'])
+                placeIDs.append(point.payload['placeID'])
         print("="*50)   
+        return placeIDs
     
     def delete_point(self, points_id:list[str]):
         '''

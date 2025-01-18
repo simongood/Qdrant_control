@@ -71,28 +71,35 @@ def main():
         return False
     
     # 初始化模型
-    qdrant_obj = qdrant_manager(collection_name='view_restaurant_test', 
+    qdrant_obj = qdrant_manager(collection_name='view_restaurant', 
                                 qdrant_url=config.get("qdrant_url"),
                                 qdrant_api_key= config.get("qdrant_api_key"))
     
     # 獲取所有需要處理的 placeID file name
-    folder_path = './data/view_restaurant_test'
-    placeID_nparray = search_placeIDs(folder_path)
+    folder_path = './data/view_restaurant'
+    placeID_nparray = search_placeIDs(folder_path)  # 全部需處理 placeID
+    processed_placeID = qdrant_obj.get_points(20000)    # 已處理完的 placeID
+    unprocessed_placeids = placeID_nparray[~np.isin(placeID_nparray, processed_placeID)]    # 剩餘需要處理的 placeID 數量
+    print(f"全部需處理數量 : {len(placeID_nparray)} \n已處理數量 : {len(processed_placeID)} \n剩餘需處理數量 : {len(unprocessed_placeids)}")
 
     # 設定每批次處理的資料量
-    batch_size = 500
+    batch_size = 250
 
     # 生成 points : point list
-    for i in range(0, len(placeID_nparray), batch_size):
+    for i in range(0, len(unprocessed_placeids), batch_size):
         batch_placeIDs = placeID_nparray[i:i + batch_size]
         points = []
 
+        print(f'正在處理第 {i//batch_size + 1} 批資料-------------------------------------')
         for placeID in batch_placeIDs:
-            if not qdrant_obj.is_same_placeID(placeID):
-                point = file_2_Qdrant_point(placeID, config, folder_path)   # 將文件轉成 point
-                points.append(point)
-            else :
-                print('重複資料, 不做成point匯入')
+            print(f'正在處理 : 第 {i//batch_size + 1} 批 ; 第 {len(points) +1} 筆')
+            point = file_2_Qdrant_point(placeID, config, folder_path)   # 將文件轉成 point
+            points.append(point)
+            # if not qdrant_obj.is_same_placeID(placeID):
+            #     point = file_2_Qdrant_point(placeID, config, folder_path)   # 將文件轉成 point
+            #     points.append(point)
+            # else :
+            #     print('重複資料, 不做成point匯入')
 
 
         # 上傳 Qdrant
