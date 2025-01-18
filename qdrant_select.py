@@ -9,5 +9,4 @@ print("Qdrant 內目前總資料 : \n", "="*50)
 qdrant_obj.get_collections()
 
 
-qdrant_manager('viewpoint_test', config.get("qdrant_url"), config.get("qdrant_api_key")).get_points()
-qdrant_manager('restaurant_test', config.get("qdrant_url"), config.get("qdrant_api_key")).get_points()
+qdrant_manager('view_restaurant_test', config.get("qdrant_url"), config.get("qdrant_api_key")).create_collection()

@@ -75,23 +75,31 @@ def main():
                                 qdrant_url=config.get("qdrant_url"),
                                 qdrant_api_key= config.get("qdrant_api_key"))
     
-    # 生成 points : point list
-    folder_path = './view_restaurant_test'
+    # 獲取所有需要處理的 placeID file name
+    folder_path = './data/view_restaurant_test'
     placeID_nparray = search_placeIDs(folder_path)
-    points = []
-    for placeID in placeID_nparray:
-        if not qdrant_obj.is_same_placeID(placeID):
-            point = file_2_Qdrant_point(placeID, config, folder_path)   # 將文件轉成 point
-            points.append(point)
-        else :
-            print('重複資料, 不做成point匯入')
+
+    # 設定每批次處理的資料量
+    batch_size = 500
+
+    # 生成 points : point list
+    for i in range(0, len(placeID_nparray), batch_size):
+        batch_placeIDs = placeID_nparray[i:i + batch_size]
+        points = []
+
+        for placeID in batch_placeIDs:
+            if not qdrant_obj.is_same_placeID(placeID):
+                point = file_2_Qdrant_point(placeID, config, folder_path)   # 將文件轉成 point
+                points.append(point)
+            else :
+                print('重複資料, 不做成point匯入')
 
 
-    # 上傳 Qdrant
-    if len(points) > 0:
-        qdrant_obj.qdrant_upsert_data(points)
-
+        # 上傳 Qdrant
+        if len(points) > 0:
+            print(f'正在上傳第 {i//batch_size + 1} 批資料，共 {len(points)} 筆')
+            qdrant_obj.qdrant_upsert_data(points)
+            qdrant_obj.get_points()
+    
     qdrant_obj.get_collections()
-    qdrant_obj.get_points()
-
 main()
