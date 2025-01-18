@@ -87,10 +87,10 @@ def main():
 
     # 生成 points : point list
     for i in range(0, len(unprocessed_placeids), batch_size):
-        batch_placeIDs = placeID_nparray[i:i + batch_size]
+        batch_placeIDs = unprocessed_placeids[i:i + batch_size]
         points = []
 
-        print(f'正在處理第 {i//batch_size + 1} 批資料-------------------------------------')
+        print(f'正在處理第 {i//batch_size + 1} 批資料, 總共{len(unprocessed_placeids)}筆----------------')
         for placeID in batch_placeIDs:
             print(f'正在處理 : 第 {i//batch_size + 1} 批 ; 第 {len(points) +1} 筆')
             point = file_2_Qdrant_point(placeID, config, folder_path)   # 將文件轉成 point
