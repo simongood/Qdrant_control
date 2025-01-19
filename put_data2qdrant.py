@@ -83,7 +83,7 @@ def main():
     print(f"全部需處理數量 : {len(placeID_nparray)} \n已處理數量 : {len(processed_placeID)} \n剩餘需處理數量 : {len(unprocessed_placeids)}")
 
     # 設定每批次處理的資料量
-    batch_size = 250
+    batch_size = 100
 
     # 生成 points : point list
     for i in range(0, len(unprocessed_placeids), batch_size):
